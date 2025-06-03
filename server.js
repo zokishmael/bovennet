@@ -1,9 +1,8 @@
 require('dotenv').config({ path: process.env.ENV_PATH || '.env' });
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const { createClient } = require('@supabase/supabase-js');
-const path = require('path');
-const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 
