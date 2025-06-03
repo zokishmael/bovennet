@@ -5,7 +5,7 @@ const cors = require('cors');
 const { createClient } = require('@supabase/supabase-js');
 const app = express();
 const port = process.env.PORT || 3000;
-
+const API_BASE_URL = "https://bovennet.vercel.app";
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_KEY;
