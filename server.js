@@ -150,4 +150,15 @@ app.get('/api/family/:no_kk', async (req, res) => {
   }
 });
 
+// Static files handling - HARUS di bawah route API
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Fallback untuk SPA
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
