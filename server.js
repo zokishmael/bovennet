@@ -26,6 +26,12 @@ const supabase = createClient(
 app.use(cors());
 app.use(express.json());
 
+// Tambahkan middleware untuk log semua request
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`);
+  next();
+});
+
 // Endpoint untuk konfigurasi
 app.get('/api/config', (req, res) => {
   res.json({
@@ -34,13 +40,17 @@ app.get('/api/config', (req, res) => {
   });
 });
 
-// Endpoint login
+// Endpoint login - tambahkan log
 app.post('/api/login', (req, res) => {
+  console.log('Login request received', req.body);
+  
   const { password } = req.body;
   
   if (password === process.env.APP_PASSWORD) {
+    console.log('Login success');
     res.json({ success: true });
   } else {
+    console.log('Login failed');
     res.status(401).json({ 
       success: false, 
       message: "Password salah" 
@@ -150,7 +160,14 @@ app.get('/api/family/:no_kk', async (req, res) => {
 });
 
 // Static files handling - HARUS di bawah route API
-app.use(express.static(path.join(__dirname, 'public')));
+// Perbaiki static file serving
+app.use(express.static(path.join(__dirname, 'public'), {
+  setHeaders: (res, path) => {
+    if (path.endsWith('.js')) {
+      res.setHeader('Content-Type', 'application/javascript');
+    }
+  }
+});
 
 // Fallback untuk SPA
 app.get('*', (req, res) => {
