@@ -1,4 +1,4 @@
-// Variabel global
+const API_BASE_URL = window.location.origin;
 let currentPage = 1;
 const itemsPerPage = 12;
 let totalPages = 1;
@@ -38,12 +38,10 @@ async function handleLogin() {
   const password = passwordInput.value.trim();
   
   try {
-    const response = await fetch('/api/login', {
+    const response = await fetch(`${API_BASE_URL}/api/login`, {
       method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json' 
-      },
-      body: JSON.stringify({ password })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: passwordInput.value.trim() })
     });
     
     if (!response.ok) {
@@ -118,7 +116,7 @@ async function performSearch() {
 // Fungsi untuk melakukan pencarian
 async function searchData() {
   try {
-    const response = await fetch('/api/search', {
+    const response = await fetch('${API_BASE_URL}/api/search', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -368,7 +366,7 @@ async function showPersonDetail(nik) {
 // Tampilkan anggota keluarga
 async function showFamilyMembers(no_kk, excludeNik) {
   try {
-    const response = await fetch(`/api/family/${no_kk}`);
+    const response = await fetch(`${API_BASE_URL}/api/family/${no_kk}`);
     const family = await response.json();
     
     if (!family || family.length === 0) return;
