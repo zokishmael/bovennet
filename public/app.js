@@ -116,7 +116,7 @@ async function performSearch() {
 // Fungsi untuk melakukan pencarian
 async function searchData() {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/search', {
+    const response = await fetch( `${API_BASE_URL}/api/search`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
