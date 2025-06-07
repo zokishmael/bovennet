@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
+import type{ KTPData } from  './KtpData';
 
 interface EditFormProps {
   data: KTPData;
@@ -16,7 +17,7 @@ export default function EditForm({ data, onUpdate, onCancel }: EditFormProps) {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev: KTPData) => ({
       ...prev,
       [name]: value
     }));

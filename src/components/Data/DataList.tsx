@@ -166,10 +166,15 @@ const handleUpdate = async (updatedData: KTPData) => {
     toast.success('Data berhasil diperbarui');
     onRefresh();
     handleClose();
-  } catch (error) {
+  } catch (error: unknown) {
+  if (error instanceof Error) {
+    console.error('Error:', error.message);
+    toast.error('Error: ' + error.message);
+  } else {
     console.error('Update error:', error);
-    toast.error(`Gagal memperbarui data: ${error.message}`);
+     toast.error(`Gagal memperbarui data`);
   }
+}
 };
 
   return (

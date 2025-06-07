@@ -1,3 +1,5 @@
+import type{ KTPData } from  './KtpData';
+
 interface ViewDataProps {
   data: KTPData;
 }
