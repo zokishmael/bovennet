@@ -1,10 +1,10 @@
-import { useState } from 'react'
-import { supabase } from '../../hooks/useSupabase'
-import { toast } from 'react-hot-toast'
+import { useState } from 'react';
+import { supabase } from '../../hooks/useSupabase';
+import { toast } from 'react-hot-toast';
 
 interface CreateFormProps {
-  onSuccess: () => void
-  onCancel: () => void
+  onSuccess: () => void;
+  onCancel: () => void;
 }
 
 export default function CreateForm({ onSuccess, onCancel }: CreateFormProps) {
@@ -23,98 +23,124 @@ export default function CreateForm({ onSuccess, onCancel }: CreateFormProps) {
     nama_kec: '',
     nama_kel: '',
     id_foto: ''
-  })
+  });
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }))
-  }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    const { name, value } = e.target;
     
-    if (formData.nik.length !== 16) {
-      toast.error('NIK must be 16 digits')
-      return
+    // Auto-format NIK dan No KK (hanya angka, max 16 digit)
+    if (name === 'nik' || name === 'no_kk') {
+      const numericValue = value.replace(/\D/g, '').slice(0, 16);
+      setFormData(prev => ({ ...prev, [name]: numericValue }));
+      return;
     }
     
-    setIsSubmitting(true)
-    
-    try {
-      // Check if NIK already exists
-      const { data: existingData } = await supabase
-        .from('ktp')
-        .select('nik')
-        .eq('nik', formData.nik)
-        .single()
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
-      if (existingData) {
-        toast.error('NIK already exists in database')
-        setIsSubmitting(false)
-        return
-      }
 
-      const { error } = await supabase
-        .from('ktp')
-        .insert([formData])
-
-      if (error) throw error
-
-      toast.success('Data created successfully')
-      onSuccess()
-    }catch (error: unknown) {
-  if (error instanceof Error) {
-    console.error('Error:', error.message);
-    toast.error('Error: ' + error.message);
-  } else {
-    console.error('Unknown error:', error);
-    toast.error('An unknown error occurred');
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  
+  // Validasi
+  if (!/^\d{16}$/.test(formData.nik)) {
+    toast.error('NIK harus 16 digit angka');
+    return;
   }
-} finally {
-      setIsSubmitting(false)
+
+  if (!/^\d{16}$/.test(formData.no_kk)) {
+    toast.error('No KK harus 16 digit angka');
+    return;
+  }
+
+  if (!formData.nama_lengkap.trim()) {
+    toast.error('Nama lengkap wajib diisi');
+    return;
+  }
+
+  setIsSubmitting(true);
+  
+  try {
+    const { data, error } = await supabase
+      .from('ktp')
+      .insert([{
+        nik: formData.nik,
+        no_kk: formData.no_kk,
+        nama_lengkap: formData.nama_lengkap,
+        jenis_kelamin: formData.jenis_kelamin,
+        tmpt_lhr: formData.tmpt_lhr || null,
+        tgl_lhr: formData.tgl_lhr || null,
+        ibu: formData.ibu || null,
+        ayah: formData.ayah || null,
+        status_hub_keluarga: formData.status_hub_keluarga || null,
+        jenis_pekerjaan: formData.jenis_pekerjaan || null,
+        alamat: formData.alamat || null,
+        nama_kec: formData.nama_kec || null,
+        nama_kel: formData.nama_kel || null,
+        id_foto: formData.id_foto || null
+      }])
+      .select(); // Tambahkan ini untuk mendapatkan response data
+
+    if (error) {
+      console.error('Supabase error details:', error);
+      throw error;
     }
+
+    if (!data || data.length === 0) {
+      throw new Error('Tidak ada data yang dikembalikan setelah insert');
+    }
+
+    toast.success('Data berhasil ditambahkan');
+    onSuccess();
+  } catch (error) {
+    console.error('Error creating data:', error);
+    toast.error(`Gagal menambahkan data`);
+  } finally {
+    setIsSubmitting(false);
   }
+};
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="bg-blue-800 p-4 rounded-lg mb-4">
+        <h3 className="text-lg font-medium text-white">Data Baru - Wajib 16 Digit Angka</h3>
+      </div>
+      
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-300">NIK (16 digits)</label>
+          <label className="block text-sm font-medium text-gray-300">NIK (16 digit angka)</label>
           <input
             type="text"
             name="nik"
             value={formData.nik}
             onChange={handleChange}
+            pattern="\d{16}"
+            title="Harus 16 digit angka"
+            maxLength={16}
             className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             required
-            maxLength={16}
-            minLength={16}
-            pattern="\d{16}"
           />
         </div>
         
         <div>
-          <label className="block text-sm font-medium text-gray-300">No. KK (16 digits)</label>
+          <label className="block text-sm font-medium text-gray-300">No. KK (16 digit angka)</label>
           <input
             type="text"
             name="no_kk"
             value={formData.no_kk}
             onChange={handleChange}
+            pattern="\d{16}"
+            title="Harus 16 digit angka"
+            maxLength={16}
             className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             required
-            maxLength={16}
-            minLength={16}
-            pattern="\d{16}"
           />
         </div>
-        
+
         <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-gray-300">Full Name</label>
+          <label className="block text-sm font-medium text-gray-300">Nama Lengkap</label>
           <input
             type="text"
             name="nama_lengkap"
@@ -124,9 +150,9 @@ export default function CreateForm({ onSuccess, onCancel }: CreateFormProps) {
             required
           />
         </div>
-        
+
         <div>
-          <label className="block text-sm font-medium text-gray-300">Gender</label>
+          <label className="block text-sm font-medium text-gray-300">Jenis Kelamin</label>
           <select
             name="jenis_kelamin"
             value={formData.jenis_kelamin}
@@ -134,127 +160,110 @@ export default function CreateForm({ onSuccess, onCancel }: CreateFormProps) {
             className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             required
           >
-            <option value="LAKI-LAKI">Male</option>
-            <option value="PEREMPUAN">Female</option>
+            <option value="LAKI-LAKI">Laki-laki</option>
+            <option value="PEREMPUAN">Perempuan</option>
           </select>
         </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-gray-300">Birth Place</label>
+		<div>
+          <label className="block text-sm font-medium text-gray-300 mb-1">Tempat Lahir</label>
           <input
             type="text"
             name="tmpt_lhr"
             value={formData.tmpt_lhr}
             onChange={handleChange}
-            className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            required
+            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white"
           />
         </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-gray-300">Birth Date</label>
+		<div>
+          <label className="block text-sm font-medium text-gray-300 mb-1">Tanggal Lahir</label>
           <input
             type="date"
             name="tgl_lhr"
             value={formData.tgl_lhr}
             onChange={handleChange}
-            className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            required
+            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white"
           />
         </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-gray-300">Mother's Name</label>
-          <input
-            type="text"
-            name="ibu"
-            value={formData.ibu}
-            onChange={handleChange}
-            className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            required
-          />
-        </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-gray-300">Father's Name</label>
-          <input
-            type="text"
-            name="ayah"
-            value={formData.ayah}
-            onChange={handleChange}
-            className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            required
-          />
-        </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-gray-300">Family Status</label>
-          <input
-            type="text"
-            name="status_hub_keluarga"
-            value={formData.status_hub_keluarga}
-            onChange={handleChange}
-            className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            required
-          />
-        </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-gray-300">Occupation</label>
-          <input
-            type="text"
-            name="jenis_pekerjaan"
-            value={formData.jenis_pekerjaan}
-            onChange={handleChange}
-            className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            required
-          />
-        </div>
-        
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-gray-300">Address</label>
-          <textarea
-            name="alamat"
-            value={formData.alamat}
-            onChange={handleChange}
-            rows={3}
-            className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            required
-          />
-        </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-gray-300">District</label>
+  <div>
+          <label className="block text-sm font-medium text-gray-300">Distrik</label>
           <input
             type="text"
             name="nama_kec"
             value={formData.nama_kec}
             onChange={handleChange}
             className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            required
           />
         </div>
-        
-        <div>
-          <label className="block text-sm font-medium text-gray-300">Village</label>
+		<div>
+          <label className="block text-sm font-medium text-gray-300">Kelurahan</label>
           <input
             type="text"
             name="nama_kel"
             value={formData.nama_kel}
             onChange={handleChange}
             className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            required
           />
         </div>
-        
+		<div>
+          <label className="block text-sm font-medium text-gray-300 mb-1">Nama Ayah</label>
+          <input
+            type="text"
+            name="ayah"
+            value={formData.ayah}
+            onChange={handleChange}
+            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white"
+          />
+        </div>
+		<div>
+          <label className="block text-sm font-medium text-gray-300 mb-1">Nama Ibu</label>
+          <input
+            type="text"
+            name="ibu"
+            value={formData.ibu}
+            onChange={handleChange}
+            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white"
+          />
+        </div>
+
         <div>
-          <label className="block text-sm font-medium text-gray-300">Photo ID (Google Drive ID)</label>
+          <label className="block text-sm font-medium text-gray-300 mb-1">Status dalam Keluarga</label>
+          <input
+            type="text"
+            name="status_hub_keluarga"
+            value={formData.status_hub_keluarga}
+            onChange={handleChange}
+            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white"
+          />
+        </div>
+		<div>
+          <label className="block text-sm font-medium text-gray-300 mb-1">Pekerjaan</label>
+          <input
+            type="text"
+            name="jenis_pekerjaan"
+            value={formData.jenis_pekerjaan}
+            onChange={handleChange}
+            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-1">Alamat</label>
+          <textarea
+            name="alamat"
+            value={formData.alamat}
+            onChange={handleChange}
+            rows={3}
+            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white"
+          />
+        </div>
+		<div>
+          <label className="block text-sm font-medium text-gray-300 mb-1">ID Foto (Google Drive ID)</label>
           <input
             type="text"
             name="id_foto"
-            value={formData.id_foto}
+            value={formData.id_foto || ''}
             onChange={handleChange}
-            className="mt-1 block w-full bg-gray-700 border border-gray-600 rounded-md shadow-sm py-2 px-3 text-white focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+            className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white"
           />
         </div>
       </div>
@@ -265,14 +274,14 @@ export default function CreateForm({ onSuccess, onCancel }: CreateFormProps) {
           onClick={onCancel}
           className="px-4 py-2 text-sm font-medium text-white bg-gray-600 rounded-md hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
         >
-          Cancel
+          Batal
         </button>
         <button
           type="submit"
           disabled={isSubmitting}
           className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
         >
-          {isSubmitting ? 'Creating...' : 'Create'}
+          {isSubmitting ? 'Menyimpan...' : 'Simpan Data Baru'}
         </button>
       </div>
     </form>

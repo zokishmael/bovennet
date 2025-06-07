@@ -1,6 +1,23 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
-import type{ KTPData } from  './KtpData';
+
+interface KTPData {
+  nik: string;
+  no_kk: string;
+  nama_lengkap: string;
+  jenis_kelamin: string;
+  tmpt_lhr: string;
+  tgl_lhr: string;
+  ibu: string;
+  ayah: string;
+  status_hub_keluarga: string;
+  jenis_pekerjaan: string;
+  alamat: string;
+  nama_kec: string;
+  nama_kel: string;
+  id_foto?: string;
+}
+
 
 interface EditFormProps {
   data: KTPData;
@@ -17,7 +34,7 @@ export default function EditForm({ data, onUpdate, onCancel }: EditFormProps) {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev: KTPData) => ({
+    setFormData(prev => ({
       ...prev,
       [name]: value
     }));

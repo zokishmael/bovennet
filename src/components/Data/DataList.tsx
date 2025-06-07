@@ -4,7 +4,7 @@ import { toast } from 'react-hot-toast';
 import ViewData from './ViewData';
 import EditForm from './EditForm';
 
-interface KTPData {
+export interface KTPData {
   nik: string;
   no_kk: string;
   nama_lengkap: string;
@@ -166,15 +166,10 @@ const handleUpdate = async (updatedData: KTPData) => {
     toast.success('Data berhasil diperbarui');
     onRefresh();
     handleClose();
-  } catch (error: unknown) {
-  if (error instanceof Error) {
-    console.error('Error:', error.message);
-    toast.error('Error: ' + error.message);
-  } else {
+  } catch (error) {
     console.error('Update error:', error);
-     toast.error(`Gagal memperbarui data`);
+    toast.error(`Gagal memperbarui data`);
   }
-}
 };
 
   return (

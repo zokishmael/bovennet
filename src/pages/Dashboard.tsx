@@ -31,16 +31,12 @@ const handleSearch = async (searchBy: string, query: string) => {
     }
     
     setData(results || []);
-  } catch (error: unknown) {
-  if (error instanceof Error) {
-    console.error('Error:', error.message);
-    toast.error('Error: ' + error.message);
-  } else {
+  } catch (error) {
     console.error('Search error:', error);
-    toast.error('Error searching');
+    toast.error('Error searching: ' );
+  } finally {
+    setIsLoading(false);
   }
-}
-
 };
 
 const handleDelete = async (nik: string) => {
@@ -62,15 +58,10 @@ const handleDelete = async (nik: string) => {
 
     toast.success('Data berhasil dihapus');
     setData(prev => prev.filter(item => item.nik !== nik));
-  } catch (error: unknown) {
-  if (error instanceof Error) {
-    console.error('Error:', error.message);
-    toast.error('Error: ' + error.message);
-  } else {
-    console.error('Unknown error:', error);
+  } catch (error) {
+    console.error('Error detail:');
     toast.error(`Gagal menghapus data`);
   }
-}
 };
 
   const handleRefresh = () => {
