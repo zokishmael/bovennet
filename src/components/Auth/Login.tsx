@@ -20,9 +20,9 @@ export default function Login() {
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900">
+    <div className="flex items-center p-4 justify-center min-h-screen bg-gray-900">
       <div className="w-full max-w-md p-8 space-y-8 bg-gray-800 rounded-lg shadow">
-        <h2 className="text-2xl font-bold text-center text-white">Admin Login</h2>
+        <h2 className="text-2xl font-bold text-center text-white">Admin X</h2>
         <form className="mt-8 space-y-6" onSubmit={handleLogin}>
           <div className="rounded-md shadow-sm space-y-4">
             <div>

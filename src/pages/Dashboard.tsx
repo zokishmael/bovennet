@@ -124,9 +124,9 @@ const handleDelete = async (nik: string) => {
       </main>
       
 {showCreateForm && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-    <div className="bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-screen overflow-y-auto">
-      <div className="p-6">
+  <div className="fixed inset-0 bg-black bg-opacity-75 flex items-start justify-center p-4 z-50 overflow-y-auto py-16">
+    <div className="bg-gray-800 rounded-lg shadow-xl w-full max-w-4xl max-h-[85vh] overflow-hidden relative">
+      <div className="p-6 ">
         <div className="flex justify-between items-start">
           <h3 className="text-lg font-medium text-white">Tambah Data Baru (16 digit)</h3>
           <button

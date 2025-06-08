@@ -241,13 +241,13 @@ const handleUpdate = async (updatedData: KTPData) => {
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-between mt-6">
-          <div className="text-sm text-gray-400">
+        <div className=" mt-6 mb-6">
+          <div className="text-sm text-gray-400 text-center">
             Menampilkan {(currentPage - 1) * itemsPerPage + 1} -{' '}
             {Math.min(currentPage * itemsPerPage, data.length)} dari {data.length} data
           </div>
           
-          <div className="flex space-x-1">
+          <div className="flex space-x-1 items-center justify-between">
             <button
               onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
               disabled={currentPage === 1}
@@ -266,14 +266,15 @@ const handleUpdate = async (updatedData: KTPData) => {
               Next
             </button>
           </div>
+		  
         </div>
       )}
 
       {/* Modal View/Edit */}
       {isOpen && selectedData && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 z-50">
-          <div className="bg-gray-800 rounded-lg shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-start justify-center p-4 z-50 overflow-y-auto py-16">
+          <div className="bg-gray-800 rounded-lg shadow-xl w-full max-w-4xl max-h-[85vh] overflow-hidden relative">
+            <div className="p-8 xrss">
               <div className="flex justify-between items-start mb-4">
                 <h3 className="text-xl font-bold text-white">
                   {viewMode === 'view' ? 'Detail Data' : 'Edit Data'}

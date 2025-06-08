@@ -103,7 +103,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6 pb-4 pt-6">
       <div className="bg-blue-800 p-4 rounded-lg mb-4">
         <h3 className="text-lg font-medium text-white">Data Baru - Wajib 16 Digit Angka</h3>
       </div>
