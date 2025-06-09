@@ -1,57 +1,100 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth" >
+<html lang="en" >
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>404 - Page Not Found</title>
-  <!-- Tailwind CSS v2.2.19 CDN -->
-  <script src="https://cdn.tailwindcss.com?plugins=forms,typography" defer></script>
   <style>
-    /* Custom dark theme colors override for Tailwind v2 */
-    :root {
-      --color-bg: #121212;
-      --color-primary: #3b82f6; /* Tailwind blue-500 */
-      --color-primary-hover: #2563eb; /* Tailwind blue-600 */
-      --color-text-primary: #f9fafb; /* Tailwind gray-50 */
-      --color-text-secondary: #9ca3af; /* Tailwind gray-400 */
-      --btn-shadow: 0 4px 6px rgba(59, 130, 246, 0.4);
+    /* Reset and base */
+    *, *::before, *::after {
+      box-sizing: border-box;
     }
     body {
-      background-color: var(--color-bg);
-      color: var(--color-text-primary);
-      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background-color: #ffffff;
+      color: #6b7280;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+        Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      font-size: 18px;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      text-align: center;
     }
-    /* Button hover and focus transitions */
-    .btn-primary {
-      background-color: var(--color-primary);
-      box-shadow: var(--btn-shadow);
-      transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    main {
+      max-width: 700px;
+      width: 100%;
+      padding-top: 4rem;
+      padding-bottom: 5rem;
     }
-    .btn-primary:hover,
-    .btn-primary:focus {
-      background-color: var(--color-primary-hover);
+    h1 {
+      font-weight: 800;
+      font-size: 4.5rem; /* 72px */
+      margin: 0 0 1rem 0;
+      line-height: 1;
+      color: #111827; /* Very dark slate for strong headline */
+    }
+    h2 {
+      font-weight: 700;
+      font-size: 2rem; /* 32px */
+      margin: 0 0 1.25rem 0;
+      color: #374151; /* Dark slate gray */
+    }
+    p {
+      margin: 0 0 2rem 0;
+      font-size: 1.125rem; /* 18px */
+      color: #6b7280;
+    }
+    a.button {
+      display: inline-block;
+      background-color: #111827; /* dark navy/black */
+      color: #ffffff;
+      font-weight: 600;
+      text-decoration: none;
+      padding: 0.75rem 2rem;
+      border-radius: 12px; /* 0.75rem */
+      box-shadow: 0 4px 8px rgba(17, 24, 39, 0.3);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+      font-size: 1.125rem;
+    }
+    a.button:hover,
+    a.button:focus {
+      background-color: #1f2937; /* lighter dark navy */
+      box-shadow: 0 6px 12px rgba(31, 41, 55, 0.5);
       transform: scale(1.05);
-      box-shadow: 0 6px 10px rgba(37, 99, 235, 0.6);
       outline: none;
     }
+    a.button:focus-visible {
+      outline: 3px solid #2563eb; /* Blue focus ring for accessibility */
+      outline-offset: 3px;
+    }
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 3.5rem; /* 56px */
+      }
+      h2 {
+        font-size: 1.5rem; /* 24px */
+      }
+      p {
+        font-size: 1rem; /* 16px */
+      }
+      a.button {
+        font-size: 1rem;
+        padding: 0.6rem 1.5rem;
+      }
+    }
   </style>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet" />
 </head>
-<body class="min-h-screen flex flex-col justify-center items-center px-6 text-center">
-
-  <main role="main" class="max-w-md w-full">
-    <h1 class="text-9xl font-extrabold tracking-tight mb-6" aria-label="404">
-      404
-    </h1>
-    <h2 class="text-3xl font-bold mb-4">Page Not Found</h2>
-    <p class="text-gray-400 mb-8 text-lg">
-      Sorry, the page you're looking for doesn't exist or has been moved.
-    </p>
-    <a href="/" class="inline-block btn-primary px-8 py-3 rounded-lg font-semibold shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500" aria-label="Go back to homepage">
-      Go Back Home
-    </a>
+<body>
+  <main role="main" aria-labelledby="title" aria-describedby="desc">
+    <h1 id="title">404</h1>
+    <h2>Page Not Found</h2>
+    <p id="desc">Sorry, the page you requested could not be found. It might have been removed or is temporarily unavailable.</p>
+    <a href="/" class="button" aria-label="Go back to homepage">Go Back Home</a>
   </main>
-
 </body>
 </html>
 
