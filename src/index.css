@@ -57,3 +57,53 @@ body {
   background-color: #2563eb;
   color: white;
 }
+/* Tambahkan di src/index.css */
+.modal-content {
+  max-height: calc(100vh - 120px);
+  overflow-y: auto;
+}
+
+.modal-footer {
+  position: sticky;
+  bottom: 0;
+  background: inherit;
+  padding: 1rem;
+  border-top: 1px solid #374151;
+}
+
+/* Untuk tombol close yang tetap terlihat saat scroll */
+.modal-header {
+  position: sticky;
+  top: 0;
+  background: inherit;
+  z-index: 10;
+  padding: 8rem;
+  border-bottom: 1px solid #374151;
+}
+/* Tambahkan di src/index.css */
+@media (max-width: 640px) {
+  .modal-container {
+    width: 95%;
+    margin: 0 200px 0 200px;
+
+  }
+  
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .table-responsive {
+    overflow-x: auto;
+    display: block;
+    width: 100%;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .action-buttons button {
+    width: 100%;
+  }
+}
